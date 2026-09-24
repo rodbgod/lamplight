@@ -1,0 +1,46 @@
+{
+  "sounds": [
+    { "id": "fire", "title": "Fire", "asset": "sounds/fire.wav" },
+    { "id": "rain_glass", "title": "Rain on glass", "asset": "sounds/rain_glass.wav" },
+    { "id": "light_rain", "title": "Light rain", "asset": "sounds/light_rain.wav" },
+    { "id": "thunder", "title": "Distant thunder", "asset": "sounds/thunder.wav" },
+    { "id": "wind_outside", "title": "Wind outside", "asset": "sounds/wind_outside.wav" },
+    { "id": "wind_trees", "title": "Wind in trees", "asset": "sounds/wind_trees.wav" },
+    { "id": "forest_night", "title": "Forest at night", "asset": "sounds/forest_night.wav" },
+    { "id": "crickets", "title": "Crickets", "asset": "sounds/crickets.wav" },
+    { "id": "room_tone", "title": "Room tone", "asset": "sounds/room_tone.wav" },
+    { "id": "page_turn", "title": "Page turning", "asset": "sounds/page_turn.wav" },
+    { "id": "clock", "title": "Clock", "asset": "sounds/clock.wav" },
+    { "id": "cat_purr", "title": "Cat purring", "asset": "sounds/cat_purr.wav" },
+    { "id": "footsteps", "title": "Footsteps", "asset": "sounds/footsteps.wav" },
+    { "id": "kettle", "title": "Simmering kettle", "asset": "sounds/kettle.wav" },
+    { "id": "brown_noise", "title": "Brown noise", "synth": "BROWN_NOISE" }
+  ],
+  "globalLayers": ["brown_noise"],
+  "scenes": [
+    {
+      "id": "cabin",
+      "title": "Cabin",
+      "base": "fire",
+      "layers": ["wind_outside", "light_rain", "cat_purr", "thunder", "kettle"]
+    },
+    {
+      "id": "rainy_window",
+      "title": "Rainy Window",
+      "base": "rain_glass",
+      "layers": ["thunder", "room_tone", "page_turn", "fire", "kettle"]
+    },
+    {
+      "id": "library",
+      "title": "Library",
+      "base": "room_tone",
+      "layers": ["page_turn", "footsteps", "light_rain", "clock"]
+    },
+    {
+      "id": "tent",
+      "title": "Tent",
+      "base": "forest_night",
+      "layers": ["crickets", "wind_trees", "light_rain", "fire"]
+    }
+  ]
+}
