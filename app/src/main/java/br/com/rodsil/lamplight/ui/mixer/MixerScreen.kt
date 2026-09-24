@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,7 +34,7 @@ import br.com.rodsil.lamplight.scene.Scene
 
 /** Functional mixer for M1. The illustrated scene screen (M3) replaces this layout, not the view model. */
 @Composable
-fun MixerScreen(modifier: Modifier = Modifier, viewModel: MixerViewModel = hiltViewModel()) {
+fun MixerScreen(onHelpClick: () -> Unit, modifier: Modifier = Modifier, viewModel: MixerViewModel = hiltViewModel()) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   MixerContent(
     state = state,
@@ -44,6 +45,7 @@ fun MixerScreen(modifier: Modifier = Modifier, viewModel: MixerViewModel = hiltV
     onMasterVolumeChange = viewModel::setMasterVolume,
     onLayerEnabledChange = viewModel::setLayerEnabled,
     onLayerVolumeChange = viewModel::setLayerVolume,
+    onHelpClick = onHelpClick,
     modifier = modifier,
   )
 }
@@ -58,6 +60,7 @@ private fun MixerContent(
   onMasterVolumeChange: (Float) -> Unit,
   onLayerEnabledChange: (String, Boolean) -> Unit,
   onLayerVolumeChange: (String, Float) -> Unit,
+  onHelpClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -84,6 +87,7 @@ private fun MixerContent(
         )
       }
     }
+    TextButton(onClick = onHelpClick) { Text(stringResource(R.string.playback_help_link)) }
   }
 }
 

@@ -5,4 +5,11 @@
     <string name="master_volume">Volume</string>
     <string name="layer_volume">%1$s volume</string>
     <string name="pick_a_scene">Pick a scene</string>
+    <string name="playback_help_link">Sounds stop during the night?</string>
+    <string name="help_title">Keep playing all night</string>
+    <string name="help_why">Some phones close apps in the background to save battery. That can stop your sounds in the middle of the night.</string>
+    <string name="help_battery">Let Lamplight run without battery restrictions. In the list, find Lamplight and choose “Don’t optimize” or “Unrestricted”.</string>
+    <string name="help_open_battery_settings">Open battery settings</string>
+    <string name="help_manufacturer">%1$s phones may need a few extra steps.</string>
+    <string name="help_open_manufacturer_guide">See the steps for %1$s</string>
 </resources>

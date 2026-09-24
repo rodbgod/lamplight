@@ -85,6 +85,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
   implementation(libs.androidx.media3.exoplayer)
+  implementation(libs.androidx.media3.session)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.hilt.android)
   ksp(libs.hilt.compiler)
