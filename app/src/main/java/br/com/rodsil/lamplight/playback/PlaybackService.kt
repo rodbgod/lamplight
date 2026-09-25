@@ -5,8 +5,10 @@ import android.content.Intent
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import br.com.rodsil.lamplight.MainActivity
+import br.com.rodsil.lamplight.R
 import br.com.rodsil.lamplight.audio.SoundMixer
 import br.com.rodsil.lamplight.scene.SceneManifest
+import br.com.rodsil.lamplight.timer.SleepTimer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.MainScope
@@ -20,6 +22,7 @@ import kotlinx.coroutines.cancel
 class PlaybackService : MediaSessionService() {
   @Inject lateinit var mixer: SoundMixer
   @Inject lateinit var manifest: SceneManifest
+  @Inject lateinit var timer: SleepTimer
 
   private val scope = MainScope()
   private var session: MediaSession? = null
@@ -27,8 +30,12 @@ class PlaybackService : MediaSessionService() {
   override fun onCreate() {
     super.onCreate()
     val openApp = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
-    session = MediaSession.Builder(this, MixPlayer(mixer, manifest, scope)).setSessionActivity(openApp).build()
+    val player = MixPlayer(mixer, timer, manifest, ::notificationSubtitle, scope)
+    session = MediaSession.Builder(this, player).setSessionActivity(openApp).build()
   }
+
+  private fun notificationSubtitle(minutesLeft: Int?): String =
+    if (minutesLeft == null) getString(R.string.app_name) else resources.getQuantityString(R.plurals.minutes_left, minutesLeft, minutesLeft)
 
   override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = session
 

@@ -90,4 +90,11 @@ dependencies {
   implementation(libs.hilt.android)
   ksp(libs.hilt.compiler)
   implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+  implementation(libs.androidx.room.runtime)
+  ksp(libs.androidx.room.compiler)
+  implementation(libs.androidx.datastore.preferences)
+}
+
+ksp {
+  arg("room.schemaLocation", "$projectDir/schemas")
 }

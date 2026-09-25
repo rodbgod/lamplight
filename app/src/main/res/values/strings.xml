@@ -12,4 +12,27 @@
     <string name="help_open_battery_settings">Open battery settings</string>
     <string name="help_manufacturer">%1$s phones may need a few extra steps.</string>
     <string name="help_open_manufacturer_guide">See the steps for %1$s</string>
+    <string name="continue_scene">Continue: %1$s</string>
+    <string name="scenes">Scenes</string>
+    <string name="your_mixes">Your mixes</string>
+    <string name="play_mix">Play mix %1$s</string>
+    <string name="delete">Delete</string>
+    <string name="delete_mix">Delete mix %1$s</string>
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="timer_off">Timer off</string>
+    <string name="timer_remaining">%1$s left</string>
+    <string name="timer_minutes">%1$d min</string>
+    <string name="timer_until_stopped">Until I stop it</string>
+    <string name="timer_custom_minutes">Custom minutes (1 to %1$d)</string>
+    <string name="timer_start">Start</string>
+    <string name="cancel">Cancel</string>
+    <string name="save_mix">Save mix</string>
+    <string name="mix_name">Name</string>
+    <string name="save">Save</string>
+    <string name="mix_saved">Mix saved.</string>
+    <string name="mix_limit_reached">You can keep up to %1$d mixes. Delete one to save another.</string>
+    <plurals name="minutes_left">
+        <item quantity="one">%d minute left</item>
+        <item quantity="other">%d minutes left</item>
+    </plurals>
 </resources>

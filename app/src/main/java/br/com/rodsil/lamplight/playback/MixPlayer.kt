@@ -10,12 +10,14 @@ import androidx.media3.common.SimpleBasePlayer
 import androidx.media3.common.util.UnstableApi
 import br.com.rodsil.lamplight.audio.SoundMixer
 import br.com.rodsil.lamplight.scene.SceneManifest
+import br.com.rodsil.lamplight.timer.SleepTimer
+import br.com.rodsil.lamplight.timer.minutesLeft
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-
-private const val ARTIST = "Lamplight"
 
 private val COMMANDS =
   Player.Commands.Builder()
@@ -24,14 +26,25 @@ private val COMMANDS =
 
 /**
  * Presents the whole mix to the media session as one endless track named after the scene, so the
- * notification, lock screen, Bluetooth and headset buttons control every layer at once.
+ * notification, lock screen, Bluetooth and headset buttons control every layer at once. The
+ * subtitle shows the sleep timer's minutes left, via [subtitle].
  */
 @OptIn(UnstableApi::class)
-class MixPlayer(private val mixer: SoundMixer, private val manifest: SceneManifest, scope: CoroutineScope) :
-  SimpleBasePlayer(Looper.getMainLooper()) {
+class MixPlayer(
+  private val mixer: SoundMixer,
+  private val timer: SleepTimer,
+  private val manifest: SceneManifest,
+  private val subtitle: (minutesLeft: Int?) -> String,
+  scope: CoroutineScope,
+) : SimpleBasePlayer(Looper.getMainLooper()) {
 
+  // Only what the notification shows: the fade and the per-second countdown would rebuild it constantly.
   init {
-    scope.launch { mixer.state.collect { invalidateState() } }
+    scope.launch {
+      combine(mixer.state, timer.remainingMs) { mix, remaining -> Triple(mix.sceneId, mix.isPlaying, remaining?.let(::minutesLeft)) }
+        .distinctUntilChanged()
+        .collect { invalidateState() }
+    }
   }
 
   override fun getState(): State {
@@ -39,7 +52,8 @@ class MixPlayer(private val mixer: SoundMixer, private val manifest: SceneManife
     val state = State.Builder().setAvailableCommands(COMMANDS).setPlayWhenReady(mix.isPlaying, PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST)
     val sceneId = mix.sceneId ?: return state.setPlaybackState(STATE_IDLE).build()
 
-    val metadata = MediaMetadata.Builder().setTitle(manifest.scene(sceneId).title).setArtist(ARTIST).build()
+    val minutes = timer.remainingMs.value?.let(::minutesLeft)
+    val metadata = MediaMetadata.Builder().setTitle(manifest.scene(sceneId).title).setArtist(subtitle(minutes)).build()
     val item = MediaItem.Builder().setMediaId(sceneId).setMediaMetadata(metadata).build()
     val playlist = listOf(MediaItemData.Builder(sceneId).setMediaItem(item).setDurationUs(C.TIME_UNSET).setIsSeekable(false).build())
     return state.setPlaylist(playlist).setPlaybackState(STATE_READY).build()

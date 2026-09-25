@@ -73,6 +73,11 @@ class SoundMixer @Inject constructor(@param:ApplicationContext private val conte
 
   fun setPlaying(playing: Boolean) = userUpdate { it.withPlaying(playing) }
 
+  fun applyMix(sceneId: String, layers: Map<String, LayerState>, masterVolume: Float) =
+    userUpdate { it.applyingMix(manifest.scene(sceneId), manifest.globalLayers, layers, masterVolume) }
+
+  fun setFade(fade: Float) = update { it.withFade(fade) }
+
   /** A user's play or pause overrides any pending resume after a phone call. */
   private fun userUpdate(transform: (MixerState) -> MixerState) {
     resumeOnFocusGain = false

@@ -75,6 +75,39 @@ class MixerStateTest {
     }
   }
 
+  class ApplyingAMix {
+    @Test
+    fun `restores saved layers and master volume`() {
+      val saved = mapOf("fire" to LayerState(enabled = true, volume = 0.2f), "rain" to LayerState(enabled = true, volume = 0.9f))
+
+      val state = MixerState().applyingMix(CABIN, GLOBAL_LAYERS, saved, masterVolume = 0.4f)
+
+      assertEquals(setOf("fire", "rain"), state.audibleLayers)
+      assertEquals(0.9f, state.layers.getValue("rain").volume)
+      assertEquals(0.4f, state.masterVolume)
+    }
+
+    @Test
+    fun `ignores layers the scene no longer offers and defaults new ones`() {
+      val saved = mapOf("fire" to LayerState(enabled = true, volume = 1f), "retired_sound" to LayerState(enabled = true, volume = 1f))
+
+      val state = MixerState().applyingMix(CABIN, GLOBAL_LAYERS, saved, masterVolume = 1f)
+
+      assertEquals(listOf("fire", "wind", "rain", "brown_noise"), state.layers.keys.toList())
+      assertEquals(LayerState(enabled = false, volume = LAYER_DEFAULT_VOLUME), state.layers.getValue("wind"))
+    }
+  }
+
+  class Fading {
+    @Test
+    fun `scales every layer without touching the master volume`() {
+      val state = MixerState().enteringScene(CABIN, GLOBAL_LAYERS).withMasterVolume(0.8f).withFade(0.5f)
+
+      assertEquals(0.4f, state.effectiveVolume("fire"), 0.0001f)
+      assertEquals(0.8f, state.masterVolume)
+    }
+  }
+
   class Playback {
     @Test
     fun `pausing silences every layer and keeps their settings`() {
