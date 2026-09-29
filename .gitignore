@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Local planning notes, kept out of the public repo
+/PRD-lamplight.md
+/TASKS.md
