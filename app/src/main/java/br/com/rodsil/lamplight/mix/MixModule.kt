@@ -2,6 +2,7 @@ package br.com.rodsil.lamplight.mix
 
 import android.content.Context
 import androidx.room.Room
+import br.com.rodsil.lamplight.pro.ProStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,5 +21,5 @@ object MixModule {
 
   @Provides fun mixDao(database: MixDatabase): MixDao = database.mixDao()
 
-  @Provides fun mixRepository(dao: MixDao): MixRepository = MixRepository(dao, System::currentTimeMillis)
+  @Provides fun mixRepository(dao: MixDao, proStore: ProStore): MixRepository = MixRepository(dao, System::currentTimeMillis) { proStore.isPro.value }
 }

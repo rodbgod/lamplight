@@ -118,6 +118,14 @@ class MixerStateTest {
     }
 
     @Test
+    fun `remembers why it stopped and forgets it when playing again`() {
+      val stopped = MixerState().enteringScene(CABIN, GLOBAL_LAYERS).withPlaying(false, StopReason.TIMER)
+
+      assertEquals(StopReason.TIMER, stopped.stopReason)
+      assertEquals(null, stopped.withPlaying(true).stopReason)
+    }
+
+    @Test
     fun `cannot play before a scene is chosen`() {
       assertFalse(MixerState().withPlaying(true).isPlaying)
     }

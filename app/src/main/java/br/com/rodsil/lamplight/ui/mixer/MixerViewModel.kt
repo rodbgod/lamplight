@@ -2,6 +2,9 @@ package br.com.rodsil.lamplight.ui.mixer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.rodsil.lamplight.analytics.Analytics
+import br.com.rodsil.lamplight.analytics.mixSaved
+import br.com.rodsil.lamplight.analytics.timerSet
 import br.com.rodsil.lamplight.audio.MixerState
 import br.com.rodsil.lamplight.audio.SoundMixer
 import br.com.rodsil.lamplight.mix.MixRepository
@@ -22,6 +25,7 @@ class MixerViewModel @Inject constructor(
   private val mixer: SoundMixer,
   private val timer: SleepTimer,
   private val mixRepository: MixRepository,
+  private val analytics: Analytics,
   manifest: SceneManifest,
 ) : ViewModel() {
   val sceneTitles: Map<String, String> = manifest.scenes.associate { it.id to it.title }
@@ -40,13 +44,20 @@ class MixerViewModel @Inject constructor(
 
   fun setLayerVolume(soundId: String, volume: Float) = mixer.setLayerVolume(soundId, volume)
 
-  fun startTimer(minutes: Int) = timer.start(minutes * MS_PER_MINUTE)
+  fun startTimer(minutes: Int) {
+    timer.start(minutes * MS_PER_MINUTE)
+    analytics.log(timerSet(minutes))
+  }
 
   fun cancelTimer() = timer.cancel()
 
   fun saveMix(name: String) {
     val mix = mixer.state.value
     val sceneId = mix.sceneId ?: return
-    viewModelScope.launch { mutableSaveResult.value = mixRepository.save(name, sceneId, mix.masterVolume, mix.layers) }
+    viewModelScope.launch {
+      val result = mixRepository.save(name, sceneId, mix.masterVolume, mix.layers)
+      mutableSaveResult.value = result
+      if (result == SaveMixResult.SAVED) analytics.log(mixSaved(sceneId))
+    }
   }
 }

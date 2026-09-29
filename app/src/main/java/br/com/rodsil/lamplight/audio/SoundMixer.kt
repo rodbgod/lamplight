@@ -60,7 +60,7 @@ class SoundMixer @Inject constructor(@param:ApplicationContext private val conte
   private var resumeOnFocusGain = false
   private val headphonesUnplugged =
     object : BroadcastReceiver() {
-      override fun onReceive(context: Context, intent: Intent) = setPlaying(false)
+      override fun onReceive(context: Context, intent: Intent) = setPlaying(false, StopReason.INTERRUPTION)
     }
 
   fun enterScene(sceneId: String) = userUpdate { it.enteringScene(manifest.scene(sceneId), manifest.globalLayers) }
@@ -71,7 +71,7 @@ class SoundMixer @Inject constructor(@param:ApplicationContext private val conte
 
   fun setMasterVolume(volume: Float) = update { it.withMasterVolume(volume) }
 
-  fun setPlaying(playing: Boolean) = userUpdate { it.withPlaying(playing) }
+  fun setPlaying(playing: Boolean, reason: StopReason = StopReason.USER) = userUpdate { it.withPlaying(playing, reason) }
 
   fun applyMix(sceneId: String, layers: Map<String, LayerState>, masterVolume: Float) =
     userUpdate { it.applyingMix(manifest.scene(sceneId), manifest.globalLayers, layers, masterVolume) }
@@ -101,10 +101,10 @@ class SoundMixer @Inject constructor(@param:ApplicationContext private val conte
   private fun pauseUntilFocusReturns() {
     focusSuspended = true
     resumeOnFocusGain = state.value.isPlaying
-    update { it.withPlaying(false) }
+    update { it.withPlaying(false, StopReason.INTERRUPTION) }
   }
 
-  private fun pauseForGood() = setPlaying(false)
+  private fun pauseForGood() = setPlaying(false, StopReason.INTERRUPTION)
 
   private fun resumeIfWaiting() {
     focusSuspended = false

@@ -93,6 +93,15 @@ dependencies {
   implementation(libs.androidx.room.runtime)
   ksp(libs.androidx.room.compiler)
   implementation(libs.androidx.datastore.preferences)
+  implementation(libs.billing.ktx)
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.analytics)
+}
+
+// google-services.json comes from the Firebase console. Without it the app builds and runs with
+// analytics off, so a fresh clone builds with no Firebase access.
+if (file("google-services.json").exists()) {
+  apply(plugin = "com.google.gms.google-services")
 }
 
 ksp {

@@ -11,7 +11,8 @@ private val LAYERS = mapOf("fire" to LayerState(enabled = true, volume = 1f))
 
 class MixRepositoryTest {
   private val dao = FakeMixDao()
-  private val repository = MixRepository(dao, now = { 1L })
+  private var isPro = false
+  private val repository = MixRepository(dao, now = { 1L }, isPro = { isPro })
 
   @Test
   fun `saves up to the free limit`() = runTest {
@@ -33,6 +34,12 @@ class MixRepositoryTest {
     repository.delete(dao.mixes.value.first())
 
     assertEquals(SaveMixResult.SAVED, repository.save("Replacement", "cabin", 1f, LAYERS))
+  }
+
+  @Test
+  fun `lets Pro save beyond the free limit`() = runTest {
+    isPro = true
+    repeat(FREE_MIX_LIMIT + 2) { assertEquals(SaveMixResult.SAVED, repository.save("Mix $it", "cabin", 1f, LAYERS)) }
   }
 
   @Test

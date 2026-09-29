@@ -8,3 +8,5 @@ import kotlinx.serialization.Serializable
 @Serializable data object ScenePlayer : NavKey
 
 @Serializable data object PlaybackHelp : NavKey
+
+@Serializable data object Pro : NavKey

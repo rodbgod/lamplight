@@ -30,6 +30,7 @@ import br.com.rodsil.lamplight.scene.Scene
 fun ScenePickerScreen(
   onOpenScene: () -> Unit,
   onHelpClick: () -> Unit,
+  onProClick: () -> Unit,
   modifier: Modifier = Modifier,
   viewModel: ScenePickerViewModel = hiltViewModel(),
 ) {
@@ -54,6 +55,7 @@ fun ScenePickerScreen(
     },
     onDeleteMix = viewModel::deleteMix,
     onHelpClick = onHelpClick,
+    onProClick = onProClick,
     modifier = modifier,
   )
 }
@@ -69,6 +71,7 @@ private fun ScenePickerContent(
   onPlayMix: (SavedMix) -> Unit,
   onDeleteMix: (SavedMix) -> Unit,
   onHelpClick: () -> Unit,
+  onProClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -86,6 +89,7 @@ private fun ScenePickerContent(
       Text(stringResource(R.string.your_mixes), style = MaterialTheme.typography.titleMedium)
       mixes.forEach { mix -> MixRow(mix, sceneTitles.getValue(mix.sceneId), onPlay = { onPlayMix(mix) }, onDelete = { onDeleteMix(mix) }) }
     }
+    TextButton(onClick = onProClick) { Text(stringResource(R.string.get_pro)) }
     TextButton(onClick = onHelpClick) { Text(stringResource(R.string.playback_help_link)) }
   }
 }

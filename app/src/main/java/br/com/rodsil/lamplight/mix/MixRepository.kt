@@ -10,12 +10,12 @@ enum class SaveMixResult {
   LIMIT_REACHED,
 }
 
-// ponytail: the limit applies to everyone until Pro and the rewarded extra slot land in M5.
-class MixRepository(private val dao: MixDao, private val now: () -> Long) {
+// ponytail: the rewarded extra slot (PRD section 8) lands with the ads in M5.
+class MixRepository(private val dao: MixDao, private val now: () -> Long, private val isPro: () -> Boolean) {
   val mixes: Flow<List<SavedMix>> = dao.all()
 
   suspend fun save(name: String, sceneId: String, masterVolume: Float, layers: Map<String, LayerState>): SaveMixResult {
-    if (dao.count() >= FREE_MIX_LIMIT) return SaveMixResult.LIMIT_REACHED
+    if (!isPro() && dao.count() >= FREE_MIX_LIMIT) return SaveMixResult.LIMIT_REACHED
     dao.insert(SavedMix(name = name.trim(), sceneId = sceneId, masterVolume = masterVolume, layers = layers, createdAt = now()))
     return SaveMixResult.SAVED
   }

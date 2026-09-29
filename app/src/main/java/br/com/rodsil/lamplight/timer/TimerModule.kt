@@ -2,6 +2,7 @@ package br.com.rodsil.lamplight.timer
 
 import android.os.SystemClock
 import br.com.rodsil.lamplight.audio.SoundMixer
+import br.com.rodsil.lamplight.audio.StopReason
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +17,5 @@ object TimerModule {
   @Provides
   @Singleton
   fun sleepTimer(mixer: SoundMixer): SleepTimer =
-    SleepTimer(scope = MainScope(), now = SystemClock::elapsedRealtime, setFade = mixer::setFade, onFinish = { mixer.setPlaying(false) })
+    SleepTimer(scope = MainScope(), now = SystemClock::elapsedRealtime, setFade = mixer::setFade, onFinish = { mixer.setPlaying(false, StopReason.TIMER) })
 }

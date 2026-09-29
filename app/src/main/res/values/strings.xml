@@ -31,6 +31,16 @@
     <string name="save">Save</string>
     <string name="mix_saved">Mix saved.</string>
     <string name="mix_limit_reached">You can keep up to %1$d mixes. Delete one to save another.</string>
+    <string name="get_pro">Lamplight Pro</string>
+    <string name="get_pro_for_mixes">Get unlimited mixes with Pro</string>
+    <string name="pro_title">Lamplight Pro</string>
+    <string name="pro_benefit_no_ads">No ads, ever.</string>
+    <string name="pro_benefit_all_scenes">Every scene, unlocked for good.</string>
+    <string name="pro_benefit_unlimited_mixes">Save as many mixes as you like.</string>
+    <string name="pro_lifetime">Buy once: %1$s</string>
+    <string name="pro_monthly">Monthly: %1$s</string>
+    <string name="pro_owned">You have Pro. Thank you for supporting Lamplight.</string>
+    <string name="pro_unavailable">Pro is not available right now. Check your connection and Google Play, then try again.</string>
     <plurals name="minutes_left">
         <item quantity="one">%d minute left</item>
         <item quantity="other">%d minutes left</item>

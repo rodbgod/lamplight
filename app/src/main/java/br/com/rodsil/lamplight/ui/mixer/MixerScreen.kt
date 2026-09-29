@@ -48,7 +48,7 @@ private val SAVE_RESULT_MESSAGES = mapOf(SaveMixResult.SAVED to R.string.mix_sav
 
 /** Functional scene controls. The illustrated scene screen (M3) replaces this layout, not the view model. */
 @Composable
-fun MixerScreen(onBack: () -> Unit, modifier: Modifier = Modifier, viewModel: MixerViewModel = hiltViewModel()) {
+fun MixerScreen(onBack: () -> Unit, onProClick: () -> Unit, modifier: Modifier = Modifier, viewModel: MixerViewModel = hiltViewModel()) {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val timerRemainingMs by viewModel.timerRemainingMs.collectAsStateWithLifecycle()
   val saveResult by viewModel.saveResult.collectAsStateWithLifecycle()
@@ -73,6 +73,7 @@ fun MixerScreen(onBack: () -> Unit, modifier: Modifier = Modifier, viewModel: Mi
     onStartTimer = viewModel::startTimer,
     onCancelTimer = viewModel::cancelTimer,
     onSaveMix = viewModel::saveMix,
+    onProClick = onProClick,
     modifier = modifier,
   )
 }
@@ -91,6 +92,7 @@ private fun MixerContent(
   onStartTimer: (Int) -> Unit,
   onCancelTimer: () -> Unit,
   onSaveMix: (String) -> Unit,
+  onProClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   var showTimerDialog by rememberSaveable { mutableStateOf(false) }
@@ -110,6 +112,9 @@ private fun MixerContent(
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
       OutlinedButton(onClick = { showSaveDialog = true }) { Text(stringResource(R.string.save_mix)) }
       saveResult?.let { Text(stringResource(SAVE_RESULT_MESSAGES.getValue(it), FREE_MIX_LIMIT), style = MaterialTheme.typography.bodyMedium) }
+    }
+    if (saveResult == SaveMixResult.LIMIT_REACHED) {
+      TextButton(onClick = onProClick) { Text(stringResource(R.string.get_pro_for_mixes)) }
     }
     state.layers.forEach { (soundId, layer) ->
       LayerControls(

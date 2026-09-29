@@ -9,6 +9,13 @@ const val DEFAULT_MASTER_VOLUME = 1f
 
 @Serializable data class LayerState(val enabled: Boolean, val volume: Float)
 
+/** Why the mix last stopped: a person, the sleep timer, or something else taking the audio (a call, unplugged headphones). */
+enum class StopReason {
+  USER,
+  TIMER,
+  INTERRUPTION,
+}
+
 /**
  * [layers] keeps manifest order: base first, then scene layers, then global layers. [fade] is the
  * sleep timer's fade out, kept apart from [masterVolume] so the user's volume survives the fade.
@@ -19,6 +26,7 @@ data class MixerState(
   val masterVolume: Float = DEFAULT_MASTER_VOLUME,
   val layers: Map<String, LayerState> = emptyMap(),
   val fade: Float = 1f,
+  val stopReason: StopReason? = null,
 ) {
   val audibleLayers: Set<String>
     get() = if (isPlaying) layers.filterValues { it.enabled }.keys else emptySet()
@@ -55,7 +63,8 @@ fun MixerState.withMasterVolume(volume: Float): MixerState = copy(masterVolume =
 
 fun MixerState.withFade(fade: Float): MixerState = copy(fade = fade.coerceIn(0f, 1f))
 
-fun MixerState.withPlaying(playing: Boolean): MixerState = copy(isPlaying = playing && sceneId != null)
+fun MixerState.withPlaying(playing: Boolean, reason: StopReason = StopReason.USER): MixerState =
+  copy(isPlaying = playing && sceneId != null, stopReason = if (playing) null else reason)
 
 private fun MixerState.updatingLayer(soundId: String, transform: (LayerState) -> LayerState): MixerState {
   val layer = layers[soundId] ?: return this

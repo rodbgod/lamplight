@@ -11,6 +11,7 @@ import androidx.navigation3.ui.NavDisplay
 import br.com.rodsil.lamplight.ui.help.PlaybackHelpScreen
 import br.com.rodsil.lamplight.ui.mixer.MixerScreen
 import br.com.rodsil.lamplight.ui.picker.ScenePickerScreen
+import br.com.rodsil.lamplight.ui.pro.ProScreen
 
 private val SCREEN_PADDING = Modifier.safeDrawingPadding().padding(16.dp)
 
@@ -27,11 +28,15 @@ fun MainNavigation() {
           ScenePickerScreen(
             onOpenScene = { backStack.add(ScenePlayer) },
             onHelpClick = { backStack.add(PlaybackHelp) },
+            onProClick = { backStack.add(Pro) },
             modifier = SCREEN_PADDING,
           )
         }
-        entry<ScenePlayer> { MixerScreen(onBack = { backStack.removeLastOrNull() }, modifier = SCREEN_PADDING) }
+        entry<ScenePlayer> {
+          MixerScreen(onBack = { backStack.removeLastOrNull() }, onProClick = { backStack.add(Pro) }, modifier = SCREEN_PADDING)
+        }
         entry<PlaybackHelp> { PlaybackHelpScreen(modifier = SCREEN_PADDING) }
+        entry<Pro> { ProScreen(modifier = SCREEN_PADDING) }
       },
   )
 }
